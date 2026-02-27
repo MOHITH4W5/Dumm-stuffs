@@ -20,13 +20,14 @@ jobs:
           git config --global user.name 'MOHITH4W5'
           git config --global user.email 'mohith.ai.ml@gmail.com'
       
-      - name: Create contribution
+      - name: Create multiple contributions
         run: |
-          TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
-          RANDOM_NUM=$((RANDOM % 1000))
-          echo "Contribution boost #$RANDOM_NUM - $TIMESTAMP" >> contribution_log.txt
-          git add contribution_log.txt
-          git commit -m "chore: daily contribution boost - $(date +%d-%m-%Y)"
+          for i in {1..15}; do
+            TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+            echo "Contribution boost #$i - $TIMESTAMP" >> contribution_log.txt
+            git add contribution_log.txt
+            git commit -m "chore: contribution boost #$i - $(date +%d-%m-%Y)"
+          done
       
       - name: Push changes
         run: git push origin main
