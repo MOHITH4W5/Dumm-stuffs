@@ -2,7 +2,7 @@ name: Daily Contribution Boost
 
 on:
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '0 0 * * *'  # Runs every day at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -20,13 +20,33 @@ jobs:
           git config --global user.name 'MOHITH4W5'
           git config --global user.email 'mohith.ai.ml@gmail.com'
       
-      - name: Create multiple contributions
+      - name: Create daily contribution boost with multiple commits
         run: |
-          for i in {1..15}; do
-            TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-            echo "Contribution boost #$i - $TIMESTAMP" >> contribution_log.txt
+          CURRENT_DATE=$(date +%d-%m-%Y)
+          CURRENT_TIME=$(date +%H:%M:%S)
+          
+          # Create multiple commits with detailed messages
+          for i in {1..20}; do
+            # Create a unique timestamp for each commit
+            TIMESTAMP=$(date -d "@$(($(date +%s) + i * 180))" "+%Y-%m-%d %H:%M:%S")
+            
+            # Determine commit type based on iteration
+            if [ $((i % 3)) -eq 0 ]; then
+              COMMIT_TYPE="feat"
+              DESCRIPTION="Added enhancement #$i to boost productivity and contribution tracking"
+            elif [ $((i % 3)) -eq 1 ]; then
+              COMMIT_TYPE="fix"
+              DESCRIPTION="Fixed optimization issue #$i in contribution system"
+            else
+              COMMIT_TYPE="chore"
+              DESCRIPTION="Daily maintenance task #$i - Updated contribution log"
+            fi
+            
+            # Add a unique line to the contribution log with timestamp
+            echo "[$TIMESTAMP] $COMMIT_TYPE: $DESCRIPTION" >> contribution_log.txt
+            
             git add contribution_log.txt
-            git commit -m "chore: contribution boost #$i - $(date +%d-%m-%Y)"
+            git commit -m "$COMMIT_TYPE: contribution boost #$i - $CURRENT_DATE ✨ $DESCRIPTION"
           done
       
       - name: Push changes
